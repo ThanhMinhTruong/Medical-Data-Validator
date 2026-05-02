@@ -1,9 +1,17 @@
 # 🏥 Healthcare Data QA Pipeline (ETL Validator)
 
-## 📌 Overview
-In the healthcare and health-tech industries, raw data provided by hospital systems or legacy databases is frequently incomplete, improperly formatted, or corrupted. If this "dirty" data enters a production database, it can crash analytics dashboards or cause billing systems to fail.
+## 🎓 Background & Inspiration
+This project was built following the concepts introduced in the [freeCodeCamp "Build a Medical Data Validator" tutorial](https://www.youtube.com/watch?v=GetPPXviwUo). 
 
-This project is a **Data Quality Assurance (QA) pipeline** built in Python. It acts as the first line of defense in an Extract, Transform, Load (ETL) process. It ingests medical billing records (CSV), performs strict schema and content validation using Pandas, and generates a detailed audit report of any records that violate business logic.
+However, instead of validating hardcoded, perfectly clean Python lists (as done in the tutorial), I took the foundational logic and engineered it to process **real-world, messy CSV datasets**. By integrating **Pandas**, this script acts as a true Data Quality Assurance (QA) pipeline, anticipating and gracefully handling missing values, corrupted strings, and unexpected data types.
+
+## 📌 Overview
+In the healthcare and health-tech industries, raw data provided by hospital systems or legacy databases is frequently incomplete. If "dirty" data enters a production database, it can crash downstream analytics or cause billing systems to fail.
+
+This Python script acts as the first line of defense in an Extract, Transform, Load (ETL) process. It ingests medical billing records, performs strict schema and content validation, and generates a detailed terminal audit report of any records that violate medical business logic.
+
+## 📂 Data Source
+The datasets used to test this pipeline were generated using **Synthea™**, an open-source synthetic patient population simulator. Using Synthea provides a highly realistic, complex healthcare dataset to test ETL logic while ensuring all patient records are 100% synthetic and HIPAA compliant.
 
 ## 🚀 Key Features
 
@@ -12,29 +20,20 @@ This project is a **Data Quality Assurance (QA) pipeline** built in Python. It a
   * Safely handles `NaN` values and empty strings.
   * Cleans and verifies financial data (e.g., stripping symbols and ensuring `BASE_COST` and `PAYER_COVERAGE` are non-negative numbers).
   * Enforces logical constraints (e.g., ensuring active prescriptions without a `STOP` date do not crash the parser).
-* **Detailed Audit Reporting:** Instead of failing silently or crashing, the script logs exactly which rows and patient IDs failed, and specifically which rules were violated.
-
-## 🛠️ Technologies Used
-* **Python 3.x**
-* **Pandas** (Data ingestion and null-value handling)
-
-## 🧠 How it Works
-
-The pipeline executes in two distinct phases:
-
-1. **Phase 1 (Schema Check):** The `validate()` function reads the CSV headers. It compares the actual columns against a hardcoded list of `required_keys`. If the sets do not match perfectly, the pipeline halts immediately.
-2. **Phase 2 (Content Check):** The `find_invalid_records()` function extracts the data as a list of dictionaries. It uses a dynamic `constraints` dictionary to evaluate every single cell against predefined rules, catching bad data types and negative financial values.
+* **Detailed Audit Reporting:** Instead of crashing when encountering bad data, the script logs exactly which rows failed and specifically which rules were violated.
 
 ## 📊 Sample Output
 
-When running the pipeline against a dirty dataset, the terminal generates an easy-to-read audit report:
+When running the pipeline against a dirty dataset, the terminal generates an easy-to-read audit report. Here is an example of the script catching missing codes and invalid payer coverage amounts:
 ```text
 Initiating Medical Data Validator...
 ----------------------------------------
 ✅ Schema Validation: Passed (Format is correct)
 ⏳ Content Validation: Scanning records...
 
-⚠️ AUDIT FAILED: Found 3 invalid records:
+⚠️ AUDIT FAILED: Found invalid records:
   -> Row 4850 (Patient 95f186d2-2d83-20c7-df20-0ce6777098e1) Failed: ['CODE']
-  -> Row 5181 (Patient 95f186d2-2d83-20c7-df20-0ce6777098e1) Failed: ['PAYER_COVERAGE', 'CODE']
+  -> Row 4852 (Patient 95f186d2-2d83-20c7-df20-0ce6777098e1) Failed: ['STOP', 'CODE', 'PAYER_COVERAGE']
+  -> Row 5181 (Patient 95f186d2-2d83-20c7-df20-0ce6777098e1) Failed: ['CODE', 'PAYER_COVERAGE']
   -> Row 5360 (Patient 7adec7c5-56a4-f1a1-1720-c5e880ae07a5) Failed: ['STOP', 'CODE', 'PAYER_COVERAGE']
+  -> Row 5824 (Patient dd0b60d1-bb3c-0e88-a070-ff083161ce31) Failed: ['STOP', 'CODE']
