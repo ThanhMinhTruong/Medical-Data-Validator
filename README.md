@@ -8,10 +8,10 @@ However, instead of validating hardcoded, perfectly clean Python lists (as done 
 ## 📌 Overview
 In the healthcare and health-tech industries, raw data provided by hospital systems or legacy databases is frequently incomplete. If "dirty" data enters a production database, it can crash downstream analytics or cause billing systems to fail.
 
-This Python script acts as the first line of defense in an Extract, Transform, Load (ETL) process. It ingests medical billing records, performs strict schema and content validation, and generates a detailed terminal audit report of any records that violate medical business logic.
+This Python script (`Medical Data Validator.py`) acts as the first line of defense in an Extract, Transform, Load (ETL) process. It ingests medical billing records, performs strict schema and content validation, and generates a detailed terminal audit report of any records that violate medical business logic.
 
 ## 📂 Data Source
-The datasets used to test this pipeline were generated using **Synthea™**, an open-source synthetic patient population simulator. Using Synthea provides a highly realistic, complex healthcare dataset to test ETL logic while ensuring all patient records are 100% synthetic and HIPAA compliant.
+The dataset used to test this pipeline (`medications_2.csv`) was generated using **Synthea™**, an open-source synthetic patient population simulator. Using Synthea provides a highly realistic, complex healthcare dataset to test ETL logic while ensuring all patient records are 100% synthetic and HIPAA compliant.
 
 ## 🚀 Key Features
 
